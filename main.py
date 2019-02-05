@@ -3,7 +3,7 @@ import os, json, sys, collections, re
 def read_json(file):
     output_file_text = sys.argv[2]
     output_file = open(output_file_text, "w")
-    sensitive_data = ["Id", "Address", "Zip", "Location", "SSN", "Website", "Company", "DOB", "Email", "WeightKG", "Vehicle"]
+    sensitive_data = ["Id", "Address", "Zip", "Location", "SSN", "Website", "Company", "DOB", "WeightKG", "Vehicle"]
 
     data = json.load(file, object_pairs_hook=collections.OrderedDict)
     for element in data:
@@ -19,6 +19,11 @@ def read_json(file):
                     print_title = "Phone Area Code"
                 elif key == "UserName":
                     print_element = element[key][0 :min(3, len(element[key])): 1] + "***"
+                elif key == "Email":
+                    print_element = element[key][0]
+                    for i in range(0, element[key].index('@') - 2):
+                        print_element += "*"
+                    print_element += element[key][element[key].index('@'): len(element[key]): 1]
 
                 if key not in sensitive_data:
                     output_file.write(("{}: " + print_element.encode('utf-8') + "\n").format(print_title.encode('utf-8')))
